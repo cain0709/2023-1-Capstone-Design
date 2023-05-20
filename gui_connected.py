@@ -139,7 +139,7 @@ class ChatGPT_GUI(QWidget):
         # Get input values
         csv_path = self.csv_path_btn.text() 
         model_type = self.model_type_combo.currentText()
-        target_cols = self.target_cols_edit.toPlainText().split('//')
+        target_cols = self.target_cols_edit.toPlainText()
         useless_cols = self.useless_cols_edit.toPlainText().split('//')
 
         # Save input values to file
