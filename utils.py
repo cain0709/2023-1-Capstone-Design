@@ -91,25 +91,21 @@ class utils:
 
 	def make_query_ML_classificaiton(self, data_path, selected_model,  label_col, class_cnt, nan_check_flag, useless_features, numeric_col, categorical_col,
 		scaler_flag, class_imbalance_flag):
-		Query = f'Please make machine learning classification {selected_model} model using python.\nPlease generate the code in the order described below and set all SEED values (and random_state parameters) to 42.\n'
-		Query += f'First, ignore warnings using the "warinings" library.\n'
-		Query += f'This is data information. The label to be predicted is {label_col}, and the label consists of {class_cnt} types.\n'
-
-		Query += f'Data path is {data_path}. Please load this data using pandas\n' #Data load
+		Query = f'I want to make python code about machine learning classification {selected_model} model following the steps I described.\n'
+		Query += f'In the code, you need to ignore warnings by using the "warinings" library.\n'
+		Query += f'Then, you need to use pandas library to load data from {data_path}.\n'
+		Query += f'In data, The label to be predicted is {label_col}, and the label consists of {class_cnt} types.\n'
+		Query += f'Also it has numeric columns such as {numeric_col}, and categoical columns such as {categorical_col}.\n'
+		Query += f'First, encode categorical columns using scikit-learn labelencoder, but if there is no categorical variable, ignore this.\n'
+		Query += f'Next, encode the label data (y of train or y of validation) with labelencoder.\n'
 		if nan_check_flag is not False:
-			Query += 'Data have nan value. Please fill nan data to zero, But Remove columns with more than 20% missing values\n' #fill nan
+			Query += 'Since data has nan value, please fill nan data to zero and remove columns if each column has more than 20% missing values.' #fill nan
 		
 		if useless_features is not False:
-			Query += f'Data have useless features. Please drop {useless_features} columns.\n'#useless features drop
-
-		Query += 'Separate 10 percent of the validation data using the train_test_split function, and set the stratify parameter of the function to True\n' #train_test split
-
-		Query += f'Data has numeric columns such as {numeric_col}, has categoical columns such as {categorical_col}. Ignore if there is no categorical variable, else encode categorical columns using scikit-learn labelencoder.\n' #labelencoding
-
-		Query += f'Encode the label data (y of train or y of validation) with labelencoder.\n'
+			Query += f'Since data has useless features, please drop {useless_features} columns.\n'#useless features drop
 
 		if scaler_flag is not False:
-			Query += 'Scale data using scikit-learn MinMaxScaler.\n'
+			Query += 'Since scaler_flag is not false, please scale data using scikit-learn MinMaxScaler.\n'
 
 		if class_imbalance_flag is not False:
 			Query += 'Since there is a current class imbalance problem, use imblearn SMOTE library to oversample only the training data.\n'
@@ -124,30 +120,30 @@ class utils:
 		elif selected_model == "LightGBM":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_lgbm} and write the objective function of optuna. Do not use pruner and use the TPESampler.\n'
 
+		Query += f'After these steps, separate 10 percent of the validation data using the train_test_split function, and set the stratify parameter of the function to True.\n' 
+		Query += f'Also, set all SEED values (and random_state parameters) to 42. \n'
+  
 		Query += 'Set the evaluation metric inside the objective function to macro f1-score, but fit part metric is logloss.\n'
-
 		Query += 'Last, check you have properly imported the necessary libraries.'
 		return Query
 
 	def make_query_ML_regression(self, data_path, selected_model, label_col, nan_check_flag, useless_features, numeric_col, categorical_col, scaler_flag):
-		Query = f'Please make machine learning regression {selected_model} model using python\nPlease generate the code in the order described below and set all SEED values (and random_state parameters) to 42.\n'
-		Query += f'First, ignore warnings using the "warinings" library.\n'
-		Query += f'This is data information. The label to be predicted is {label_col}.\n'
+		Query = f'I want to make python code about machine learning regression {selected_model} model following the steps I described.\n'
+		Query += f'In the code, you need to ignore warnings by using the "warinings" library.\n'
+		Query += f'Then, you need to use pandas library to load data from {data_path}.\n'
+		Query += f'In data, The label to be predicted is {label_col}.\n'
+		Query += f'Also it has numeric columns such as {numeric_col}, and categoical columns such as {categorical_col}.\n'
+		Query += f'First, encode categorical columns using scikit-learn labelencoder, but if there is no categorical variable, ignore this.\n'
+		Query += f'Next, encode the label data (y of train or y of validation) with labelencoder.\n'
 		
-
-		Query += f'Data path is {data_path}. Please load this data using pandas\n' #Data load
-		if nan_check_flag is not None:
-			Query += 'Data have nan value. Please fill nan data to zero, But Remove columns with more than 20% missing values\n' #fill nan
+		if nan_check_flag is not False:
+			Query += 'Since data has nan value, please fill nan data to zero and remove columns if each column has more than 20% missing values.' #fill nan
 		
-		if useless_features is not None:
-			Query += f'Data have useless features. Please drop {useless_features} columns.\n'#useless features drop
+		if useless_features is not False:
+			Query += f'Since data has useless features, please drop {useless_features} columns.\n'#useless features drop
 
-		Query += 'Separate 10 percent of the validation data using the train_test_split function, and set the stratify parameter of the function to True\n' #train_test split
-
-		Query += f'Data has numeric columns such as {numeric_col}, has categoical columns such as {categorical_col}. Ignore if there is no categorical variable, else encode categorical columns using scikit-learn labelencoder\n' #labelencoding
-
-		if scaler_flag is not None:
-			Query += 'Scale data using scikit-learn MinMaxScaler.'
+		if scaler_flag is not False:
+			Query += 'Since scaler_flag is not false, please scale data using scikit-learn MinMaxScaler.\n'
 
 		if selected_model == "RandomForest":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_rf} and write the objective function of optuna. Do not use pruner and use the TPESampler.\n'
@@ -158,7 +154,10 @@ class utils:
 			Query+= f'In the fit part of the internal of objective function, set eval_set to validation data and earlystopping round to 100. Do not use pruner and use the TPESampler.\n'
 		elif selected_model == "LightGBM":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_lgbm} and write the objective function of optuna. Do not use pruner and use the TPESampler.\n'
+		Query += f'After these steps, separate 10 percent of the validation data using the train_test_split function, and set the stratify parameter of the function to True.\n'
 
+		Query += f'Also, set all SEED values (and random_state parameters) to 42. \n'
+  
 		Query += 'Set the evaluation metric inside the objective function to Mean Square Error, but fit part metric is l2.\n'
 
 		Query += 'Last, check you have properly imported the necessary libraries.'
