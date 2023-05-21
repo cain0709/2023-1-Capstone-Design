@@ -5,8 +5,92 @@ import os
 import pandas as pd
 import numpy as np
 import utils
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QTextEdit, QComboBox, QHBoxLayout, QVBoxLayout, QFileDialog
+import time
+import signal
+import subprocess
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import pyqtSlot, QObject, pyqtSignal, QThread
 from PyQt5.QtGui import QPalette, QColor, QIcon
+from datetime import datetime
+
+model_path_list = []
+
+class Worker(QThread):
+
+    output_field_signal = pyqtSignal(str)
+
+    def __init__(self, parent, query_list, csv_path):
+        super().__init__(parent)
+        self.parent = parent
+        self.csv_path = csv_path
+        self.query_list = query_list
+        self.output_field_text = ''
+        self.model_list = ['rf','et', 'xgb', 'lgbm']
+
+    def __del__(self):
+        print("API Worker Deleted")
+
+    def run(self):
+        model_path_list = []
+
+        print("Worker Run!")
+        model_save_path = os.getcwd() + '/generated_model'
+        now = datetime.now()     
+        timestamp = str(now.timestamp()).split('.')[0]
+        csv_name = self.csv_path.split('/')[-1].split('.')[0]
+
+        self.output_field_text += 'Code Generate Start!\n'
+        self.output_field_signal.emit(self.output_field_text)
+
+        # Set user_content with the content from query_list
+        for i, user_content in enumerate(self.query_list):
+            self.output_field_text = self.output_field_text + f"{self.model_list[i]} generating..\n"
+            self.output_field_signal.emit(self.output_field_text)
+            messages = []
+            messages.append({"role": "user", "content": f"{user_content}"})
+            completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
+
+            assistant_content = completion.choices[0].message["content"].strip().replace('`','').replace('python','')
+            messages.append({"role": "assistant", "content": f"{assistant_content}"})
+
+            print(f"GPT: {assistant_content}")
+
+            if not os.path.isdir(model_save_path):
+                os.mkdir(model_save_path)
+            model_path_list.append(f'{model_save_path}/{csv_name}_{self.model_list[i]}_{timestamp}.py')
+            file = open(f'{model_save_path}/{csv_name}_{self.model_list[i]}_{timestamp}.py', 'w')    # hello.txt 파일을 쓰기 모드(w)로 열기. 파일 객체 반환
+            file.write(assistant_content)      # 파일에 문자열 저장
+            file.close()
+            self.output_field_text = self.output_field_text + self.model_list[i] + ' model generated finish!\n'
+            self.output_field_signal.emit(self.output_field_text)
+
+        self.output_field_text += 'All model created!\n'
+        self.output_field_signal.emit(self.output_field_text)
+
+        '''
+        print("Model path list : " +str(model_path_list))
+        for i, model_py_path in enumerate(model_path_list):
+            self.output_field_text = self.output_field_text + model_py_path + ' execute!\n' 
+            self.output_field_signal.emit(self.output_field_text)
+            cmd = ["python", "-u", model_py_path]
+            process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, encoding='utf-8')
+            while True:
+                output = process.stdout.readline()
+                print("OUTPUT : " + str(output.strip()))
+                if output == '' and process.poll() is not None or self.isRunning() is False:
+                    print("Stop subprocess")
+                    os.killpg(os.getpgid(process.pid), signal.SIGTERM) 
+                    break
+                if output:
+                    self.output_field_text += output.strip()
+                    self.output_field_signal.emit(self.output_field_text)
+                    print("TEXT" +str(self.output_field_text))
+        '''
+
+        self.__del__()
+
+
+      
 
 class ChatGPT_GUI(QWidget):
     def __init__(self):
@@ -17,8 +101,8 @@ class ChatGPT_GUI(QWidget):
         self.csv_path = None
         self.target_cols = None
         self.useless_cols = None
-        self.util = utils.utils()
 
+        self.util = utils.utils()
         self.initUI()
 
         # dark mode
@@ -137,15 +221,17 @@ class ChatGPT_GUI(QWidget):
             
     def send_request(self):
         # Get input values
+        self.output_field_test = ''
         csv_path = self.csv_path_btn.text() 
         model_type = self.model_type_combo.currentText()
         target_cols = self.target_cols_edit.toPlainText()
         useless_cols = self.useless_cols_edit.toPlainText().split('//')
 
+
         # Save input values to file
         self.save_input_values(csv_path, model_type, target_cols, useless_cols)
 
-        openai.api_key = "<api key>"
+        openai.api_key = "<api-key>"
 
         if model_type == "Classification":
             query_list = self.util.classification_process(csv_path, useless_cols, target_cols)
@@ -153,21 +239,14 @@ class ChatGPT_GUI(QWidget):
         elif model_type == "Regression":
             query_list = self.util.regression_process(csv_path, useless_cols, target_cols)
 
-        # Set user_content with the content from query_list
-        user_content = query_list[0]
-
-        messages = []
-        messages.append({"role": "user", "content": f"{user_content}"})
-        completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
-
-        assistant_content = completion.choices[0].message["content"].strip()
-        messages.append({"role": "assistant", "content": f"{assistant_content}"})
-
-        print(f"GPT: {assistant_content}")
-    
-
+        worker = Worker(self, query_list, csv_path)
+        worker.start()
+        worker.output_field_signal.connect(self.output_field_print)
         # Update output field with response text
-        self.output_field.setText(assistant_content)
+
+
+    def output_field_print(self, str):
+        self.output_field.setText(str)
 
 
     

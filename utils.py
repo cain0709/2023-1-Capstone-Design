@@ -92,17 +92,21 @@ class utils:
 	def make_query_ML_classificaiton(self, data_path, selected_model,  label_col, class_cnt, nan_check_flag, useless_features, numeric_col, categorical_col,
 		scaler_flag, class_imbalance_flag):
 		Query = f'I want to make python code about machine learning classification {selected_model} model following the steps I described.\n'
+		Query = f'And, I don\'t want code annotations.\n'
 		Query += f'In the code, you need to ignore warnings by using the "warinings" library.\n'
 		Query += f'Then, you need to use pandas library to load data from {data_path}.\n'
 		Query += f'In data, The label to be predicted is {label_col}, and the label consists of {class_cnt} types.\n'
 		Query += f'Also it has numeric columns such as {numeric_col}, and categoical columns such as {categorical_col}.\n'
+
+		if useless_features is not False:
+			Query += f'Since data has useless features, please drop {useless_features} columns.\n'#useless features drop
+
 		Query += f'First, encode categorical columns using scikit-learn labelencoder, but if there is no categorical variable, ignore this.\n'
 		Query += f'Next, encode the label data (y of train or y of validation) with labelencoder.\n'
+		
 		if nan_check_flag is not False:
 			Query += 'Since data has nan value, please fill nan data to zero and remove columns if each column has more than 20% missing values.' #fill nan
 		
-		if useless_features is not False:
-			Query += f'Since data has useless features, please drop {useless_features} columns.\n'#useless features drop
 
 		if scaler_flag is not False:
 			Query += 'Since scaler_flag is not false, please scale data using scikit-learn MinMaxScaler.\n'
@@ -129,19 +133,21 @@ class utils:
 
 	def make_query_ML_regression(self, data_path, selected_model, label_col, nan_check_flag, useless_features, numeric_col, categorical_col, scaler_flag):
 		Query = f'I want to make python code about machine learning regression {selected_model} model following the steps I described.\n'
+		Query = f'And, I don\'t want code annotations.\n'
 		Query += f'In the code, you need to ignore warnings by using the "warinings" library.\n'
 		Query += f'Then, you need to use pandas library to load data from {data_path}.\n'
 		Query += f'In data, The label to be predicted is {label_col}.\n'
 		Query += f'Also it has numeric columns such as {numeric_col}, and categoical columns such as {categorical_col}.\n'
+
+		if useless_features is not False:
+			Query += f'Since data has useless features, please drop {useless_features} columns.\n'#useless features drop	
+
 		Query += f'First, encode categorical columns using scikit-learn labelencoder, but if there is no categorical variable, ignore this.\n'
 		Query += f'Next, encode the label data (y of train or y of validation) with labelencoder.\n'
 		
 		if nan_check_flag is not False:
 			Query += 'Since data has nan value, please fill nan data to zero and remove columns if each column has more than 20% missing values.' #fill nan
 		
-		if useless_features is not False:
-			Query += f'Since data has useless features, please drop {useless_features} columns.\n'#useless features drop
-
 		if scaler_flag is not False:
 			Query += 'Since scaler_flag is not false, please scale data using scikit-learn MinMaxScaler.\n'
 

@@ -1,4 +1,4 @@
 CSV Path: C:/Users/na018/Desktop/capstone/2023-1-Capstone-Design/iris.csv
 Model Type: Classification
 Target Columns: S, p, e, c, i, e, s
-Useless-Feature Columns: 
+Useless-Feature Columns: Id
