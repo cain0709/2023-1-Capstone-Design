@@ -228,7 +228,7 @@ class utils:
 		numeric_col, categorical_col = self.column_type_check(df)
 
 		for model in self.selected_model:
-			Query.append(self.make_query_ML_classificaiton(data_path, model, label_col, class_cnt, nan_check_flag, useless_features, numeric_col, categorical_col, scaler_flag, class_imbalance_flag))
+			Query.append(self.make_query_ML_regression(data_path, model, label_col, nan_check_flag, useless_features, numeric_col, categorical_col, scaler_flag))
 		return Query
 
 
