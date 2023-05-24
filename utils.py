@@ -142,7 +142,8 @@ class utils:
 	def make_query_ML_regression(self, data_path, selected_model, label_col, nan_check_flag, useless_features, numeric_col, categorical_col, scaler_flag):
 		Query = f'I want to make python code about machine learning regression {selected_model} model following the steps I described.\n'
 		Query += f'In the code, you need to ignore warnings by using the "warinings" library.\n'
-
+		Query += f'Please import LabelEncoder, MinMaxScaler, train_test_split, f1_score, optuna, TPESampler, mean_squared_error on the code.\n'
+		
 		Query += f'Then, you need to use pandas library to load data from {data_path}.\n'
 		Query += f'In data, The label to be predicted is {label_col}.\n'
 		Query += f'Also it has numeric columns such as {numeric_col}, and categoical columns such as {categorical_col}.\n'
