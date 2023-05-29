@@ -250,11 +250,11 @@ class utils:
 			if model == 'RandomForest':
 				self.param_rf['criterion'] = 'trial.suggest_categorical("criterion", ["squared_error","absolute_error"])'
 			elif model == 'ExtraTree':
-				self.param_et['criterion'] = 'trial.suggest_categorical("criterion", ["squared_error","absolute_error"])'
+				self.param_ex['criterion'] = 'trial.suggest_categorical("criterion", ["squared_error","absolute_error"])'
 			Query.append(self.make_query_ML_regression(data_path, model, label_col, nan_check_flag, useless_features, numeric_col, categorical_col, scaler_flag))
 			if model == 'RandomForest':
 				self.param_rf['criterion'] = self.backup_criterion
 			elif model == 'ExtraTree':
-				self.param_et['criterion'] = self.backup_criterion
+				self.param_ex['criterion'] = self.backup_criterion
 
 		return Query
