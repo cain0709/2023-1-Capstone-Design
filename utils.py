@@ -231,7 +231,7 @@ class utils:
 		useless_features = useless_param
 		numeric_col = None
 		categorical_col = None
-		label_col = label_col_param
+		label_col = label_col_param #label_col
 		scaler_flag = True
 		Query = []
 
