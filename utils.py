@@ -234,8 +234,8 @@ class utils:
 		label_col = label_col_param
 		scaler_flag = True
 		Query = []
-		
-		label_col = 'target' #Consider multivariate regression
+
+		df = pd.read_csv(data_path)
 		nan_check_flag = self.nan_check(df)
 
 		#Drop useless columns

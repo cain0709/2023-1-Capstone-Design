@@ -1,4 +1,4 @@
-CSV Path: C:/Users/na018/Desktop/capstone/2023-1-Capstone-Design/iris.csv
+CSV Path: C:/Users/na018/Desktop/capstone/2023-1-Capstone-Design/Boston_housing.csv
 Model Type: Classification
-Target Columns: S, p, e, c, i, e, s
-Useless-Feature Columns: Id
+Target Columns: P, R, I, C, E
+Useless-Feature Columns: 
