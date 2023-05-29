@@ -123,15 +123,19 @@ class utils:
 
 		if selected_model == "RandomForest":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_rf} and write the objective function of optuna.\n'
+			Query += f'Please add library "from sklearn.ensemble import RandomForestClassifier".\n'
 			Query += f'Do not use pruner and use the TPESampler.\n'
 		elif selected_model == "ExtraTree":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_ex} and write the objective function of optuna.\n'
+			Query += f'Please add library "from sklearn.ensemble import ExtraTreesClassifier".\n'
 			Query += f'Do not use pruner and use the TPESampler.\n'
 		elif selected_model == "XGBoost":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_xgb} and write the objective function of optuna.\n'
+			Query += f'Please add library "from xgboost import XGBClassifier".\n'
 			Query += f'Do not use pruner and use the TPESampler.\n'
 		elif selected_model == "LightGBM":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_lgbm} and write the objective function of optuna.\n'
+			Query += f'Please add library "import lightgbm as lgb".\n'
 			Query += f'Do not use pruner and use the TPESampler.\n'
 
 		Query += f'Continue with these steps, set the evaluation metric inside the objective function to macro f1-score, but fit part metric is logloss.\n'
@@ -150,39 +154,41 @@ class utils:
 		Query += f'In data, The label to be predicted is {label_col}.\n'
 		Query += f'Also it has numeric columns such as {numeric_col}, and categoical columns such as {categorical_col}.\n'
 
-		if useless_features is not False:
-			Query += f'Since data has useless features, please drop {useless_features} columns.\n'#useless features drop
+		#if useless_features is not False:
+		#	Query += f'Since data has useless features, please drop {useless_features} columns.\n'#useless features drop
 		
 		if nan_check_flag is not False:
 			Query += f'Since data has nan value, please fill nan data to zero and remove columns if each column has more than 20% missing values.' #fill nan
 
-		if scaler_flag is not False:
-			Query += f'Since scaler_flag is not false, please scale data using scikit-learn MinMaxScaler.\n'
-
+		#if scaler_flag is not False:
+		#	Query += f'Since scaler_flag is not false, please scale data using scikit-learn MinMaxScaler.\n'
 
 		Query += f'First, encode categorical columns using scikit-learn labelencoder, but if there is no categorical variable, ignore this.\n'
 		Query += f'Next, encode the label data (y of train or y of validation) with labelencoder.\n'
 		Query += f'Then, split data into X and y.\n'
 
-		Query += f'Also, separate 10 percent of the validation data using the train_test_split function, and set the stratify parameter of the function to True.\n' 
+		Query += f'Also, separate 10 percent of the validation data using the train_test_split function.\n' 
 		Query += f'In these code, set all SEED values (and random_state parameters) to 42. \n'
-
 
 		if selected_model == "RandomForest":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_rf} and write the objective function of optuna.\n'
+			Query += f'Please add library "from sklearn.ensemble import RandomForestRegressor".\n'
 			Query += f'Do not use pruner and use the TPESampler.\n'
 		elif selected_model == "ExtraTree":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_ex} and write the objective function of optuna.\n'
+			Query += f'Please add library "from sklearn.ensemble import ExtraTreesRegressor".\n'
 			Query += f'Do not use pruner and use the TPESampler.\n'
 		elif selected_model == "XGBoost":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_xgb} and write the objective function of optuna.\n'
+			Query += f'Please add library "from xgboost import XGBRegressor".\n'
 			Query += f'Do not use pruner and use the TPESampler.\n'
 		elif selected_model == "LightGBM":
 			Query += f'Please optimize hyperparameters using optuna library, and refer to this dictionary {self.param_lgbm} and write the objective function of optuna.\n'
+			Query += f'Please add library "import lightgbm as lgb".\n'
 			Query += f'Do not use pruner and use the TPESampler.\n'
 
 		Query += f'Continue with these steps, set the evaluation metric inside the objective function to Mean Square Error, but fit part metric is l2.\n'
-		Query += f'After these steps, print best hyperparameters and score,valid f1 score and valid mse.\n'
+		Query += f'After these steps, print best hyperparameters and score, valid mse.\n'
 		
 		Query += f'Finally, check your code, so that I can use code avaliable at once'
 
