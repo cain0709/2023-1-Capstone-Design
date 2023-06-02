@@ -231,7 +231,7 @@ class ChatGPT_GUI(QWidget):
         # Save input values to file
         self.save_input_values(csv_path, model_type, target_cols, useless_cols)
 
-        openai.api_key = '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'
+        openai.api_key = '<api>'
 
         if model_type == "Classification":
             query_list = self.util.classification_process(csv_path, useless_cols, target_cols)
